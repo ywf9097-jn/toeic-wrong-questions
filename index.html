@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>多益錯題本</title>
+<style>
+:root{--bg:#f2f5f7;--card:#fff;--ink:#1b2a3a;--sub:#5d6b7a;--line:#d8e0e7;--acc:#2457c5;--acc-t:#e6edfb;--bad:#c23b3b;--bad-t:#fbeaea;--ok:#2e7d5b;--ok-t:#e5f4ec}
+@media (prefers-color-scheme:dark){:root{--bg:#121920;--card:#1b242d;--ink:#e6edf3;--sub:#92a1b0;--line:#2c3844;--acc:#7aa2ff;--acc-t:#1f2c4a;--bad:#ff8a8a;--bad-t:#3a2326;--ok:#6fd1a0;--ok-t:#1d3328}}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.6 -apple-system,"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;padding:0 14px 60px;max-width:720px;margin:0 auto}
+h1{font-size:22px;margin:18px 0 4px}
+.stat{color:var(--sub);font-size:14px;margin-bottom:12px}
+nav{display:flex;gap:6px;position:sticky;top:0;background:var(--bg);padding:8px 0;z-index:5}
+nav button{flex:1;padding:10px 4px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;font:inherit;font-size:14px;cursor:pointer}
+nav button.on{background:var(--acc);color:#fff;border-color:var(--acc)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin:10px 0}
+label{display:block;font-weight:600;font-size:14px;margin:12px 0 4px}
+input[type=text],textarea,select{width:100%;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit}
+textarea{min-height:90px;resize:vertical}
+.hint{color:var(--sub);font-size:13px;margin-top:2px}
+.btn{padding:10px 14px;border:1px solid var(--acc);background:var(--acc);color:#fff;border-radius:10px;font:inherit;font-size:15px;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--acc)}
+.btn.warn{background:transparent;color:var(--bad);border-color:var(--bad)}
+.btn:focus-visible,nav button:focus-visible,.opt:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.letters{display:flex;gap:8px}
+.letters label{margin:0;flex:1}
+.letters input{display:none}
+.letters span{display:block;text-align:center;padding:10px 0;border:1px solid var(--line);border-radius:10px;cursor:pointer;background:var(--bg)}
+.letters input:checked+span{background:var(--acc);color:#fff;border-color:var(--acc)}
+.tag{display:inline-block;font-size:12px;padding:1px 8px;border-radius:99px;background:var(--acc-t);color:var(--acc)}
+.tag.bad{background:var(--bad-t);color:var(--bad)}.tag.ok{background:var(--ok-t);color:var(--ok)}
+.q{white-space:pre-wrap;margin:8px 0}
+.opt{display:block;width:100%;text-align:left;padding:10px 12px;margin:6px 0;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit;cursor:pointer}
+.opt.right{background:var(--ok-t);border-color:var(--ok)}
+.opt.wrong{background:var(--bad-t);border-color:var(--bad)}
+.opt:disabled{cursor:default;color:var(--ink)}
+.exp{white-space:pre-wrap;background:var(--bg);border-radius:10px;padding:10px;margin-top:8px;font-size:15px}
+.empty{color:var(--sub);text-align:center;padding:30px 10px}
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s}
+.toast.show{opacity:1}
+details summary{cursor:pointer;color:var(--acc);font-size:14px;margin-top:8px}
+.hide{display:none}
+</style>
+</head>
+<body>
+<h1>多益錯題本</h1>
+<div class="stat" id="stat"></div>
+<nav id="nav">
+  <button data-t="add" class="on">新增</button>
+  <button data-t="log">紀錄</button>
+  <button data-t="retake">重考錯題</button>
+  <button data-t="backup">備份</button>
+</nav>
+
+<section id="add">
+  <div class="card">
+    <label for="src">1. 題目來源</label>
+    <input type="text" id="src" list="srcs" placeholder="例如：黃金認證 2024 Test 3 Part 5" autocomplete="off">
+    <datalist id="srcs"></datalist>
+    <label for="qs">2. 題目</label>
+    <textarea id="qs" placeholder="貼上題目（可含空格題句、對話或短文）"></textarea>
+    <label for="ops">3. 選項（一行一個，不用打 A B C D）</label>
+    <textarea id="ops" placeholder="increase&#10;increases&#10;increased&#10;increasing"></textarea>
+    <label>4. 我的答案</label>
+    <div class="letters" id="mine"></div>
+    <label>5. 正確答案</label>
+    <div class="letters" id="corr"></div>
+    <div class="row"><button class="btn" id="save">儲存這題</button><button class="btn ghost" id="clear">清空</button></div>
+  </div>
+</section>
+
+<section id="log" class="hide">
+  <div class="card">
+    <div class="row" style="margin-top:0">
+      <select id="fsrc" style="flex:1"></select>
+      <select id="fst" style="flex:1"><option value="all">全部</option><option value="wrong">答錯</option><option value="right">答對</option><option value="todo">錯題未掌握</option><option value="done">已掌握</option></select>
+    </div>
+  </div>
+  <div id="list"></div>
+</section>
+
+<section id="retake" class="hide"><div id="rt"></div></section>
+
+<section id="backup" class="hide">
+  <div class="card">
+    <p>資料只存在這個瀏覽器裡。換手機或清除瀏覽資料前，請先匯出備份。</p>
+    <div class="row"><button class="btn" id="exp">匯出備份 (.json)</button><button class="btn ghost" id="impBtn">匯入備份</button></div>
+    <input type="file" id="imp" accept="application/json" class="hide">
+  </div>
+</section>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+var KEY="toeic-mistakes-v1",L=["A","B","C","D","E"];
+var data=[];
+function load(){try{data=JSON.parse(localStorage.getItem(KEY)||"[]")||[]}catch(e){data=[]}}
+function persist(){try{localStorage.setItem(KEY,JSON.stringify(data))}catch(e){toast("無法儲存，請先匯出備份")}}
+function $(id){return document.getElementById(id)}
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+function toast(m){var t=$("toast");t.textContent=m;t.classList.add("show");setTimeout(function(){t.classList.remove("show")},1800)}
+function isWrong(e){return e.mine!==e.correct}
+
+/* AI explanation prompt */
+function buildPrompt(e){
+  var opts=e.options.map(function(o,i){return L[i]+". "+o}).join("\n");
+  return "你是資深多益（TOEIC）老師。請用「中英對照」幫我解析下面這題，語氣簡潔、適合自學。\n\n"+
+  "【來源】"+(e.source||"未填")+"\n【題目】\n"+e.question+"\n【選項】\n"+opts+
+  "\n【我的答案】"+e.mine+"\n【正確答案】"+e.correct+"\n\n"+
+  "請依序回答，每點都用「中文 / English」並列：\n"+
+  "1. 考點觀念 Concept tested：這題考什麼（詞性、時態、介系詞、連接詞、片語、單字辨析、題型等），一句話點出，並說明多益常怎麼考這個觀念。\n"+
+  "2. 為什麼正確答案是對的 Why it's correct：指出題目中的線索字（signal words）。\n"+
+  "3. 我為什麼會錯 Why my answer is wrong："+(isWrong(e)?"說明我選的選項錯在哪、可能的思考陷阱。":"我答對了，請說明這題常見的陷阱，以及如何確認不是蒙對。")+"\n"+
+  "4. 其他選項 Other options：逐一說明為什麼不選。\n"+
+  "5. 題目翻譯 Translation：整題中譯，並附重點單字與片語（中英對照，3 到 5 個）。\n"+
+  "6. 解題口訣 Quick tip：下次遇到同類題的 1 到 2 句判斷方法。\n"+
+  "7. 同觀念練習 Practice：出 1 題同觀念的新題（多益格式，附選項），先不要給答案，等我回答。";
+}
+function copy(text){
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(function(){toast("已複製，去 Claude 貼上")},function(){fallback(text)});
+  }else fallback(text);
+}
+function fallback(text){
+  var t=document.createElement("textarea");t.value=text;t.style.position="fixed";t.style.opacity="0";document.body.appendChild(t);t.select();
+  try{document.execCommand("copy");toast("已複製，去 Claude 貼上")}catch(e){toast("複製失敗，請手動選取")}
+  document.body.removeChild(t);
+}
+
+/* tabs */
+function show(t){
+  ["add","log","retake","backup"].forEach(function(s){$(s).classList.toggle("hide",s!==t)});
+  Array.prototype.forEach.call($("nav").children,function(b){b.classList.toggle("on",b.dataset.t===t)});
+  if(t==="log")renderLog();
+  if(t==="retake")startRetake();
+}
+$("nav").addEventListener("click",function(ev){var b=ev.target.closest("button");if(b)show(b.dataset.t)});
+
+/* stats + sources */
+function refresh(){
+  var w=data.filter(isWrong).length,todo=data.filter(function(e){return isWrong(e)&&!e.mastered}).length;
+  $("stat").textContent="共 "+data.length+" 題｜答錯 "+w+"｜待加強 "+todo;
+  var srcs=[];data.forEach(function(e){if(e.source&&srcs.indexOf(e.source)<0)srcs.push(e.source)});
+  $("srcs").innerHTML=srcs.map(function(s){return '<option value="'+esc(s)+'">'}).join("");
+  var cur=$("fsrc").value;
+  $("fsrc").innerHTML='<option value="">所有來源</option>'+srcs.map(function(s){return '<option value="'+esc(s)+'">'+esc(s)+'</option>'}).join("");
+  $("fsrc").value=srcs.indexOf(cur)>=0?cur:"";
+}
+
+/* add form */
+function letterPicker(id,name){
+  $(id).innerHTML=L.slice(0,4).map(function(l){return '<label><input type="radio" name="'+name+'" value="'+l+'"><span>'+l+'</span></label>'}).join("");
+}
+letterPicker("mine","mine");letterPicker("corr","corr");
+function val(n){var r=document.querySelector('input[name="'+n+'"]:checked');return r?r.value:""}
+function clearForm(keepSrc){
+  if(!keepSrc)$("src").value="";
+  $("qs").value="";$("ops").value="";
+  Array.prototype.forEach.call(document.querySelectorAll(".letters input"),function(i){i.checked=false});
+}
+$("clear").onclick=function(){clearForm(false)};
+$("save").onclick=function(){
+  var q=$("qs").value.trim(),opts=$("ops").value.split("\n").map(function(s){return s.trim()}).filter(Boolean),m=val("mine"),c=val("corr");
+  if(!q){toast("請輸入題目");return}
+  if(opts.length<2){toast("選項至少兩個");return}
+  if(!m||!c){toast("請選我的答案與正確答案");return}
+  if(L.indexOf(m)>=opts.length||L.indexOf(c)>=opts.length){toast("答案字母超出選項數量");return}
+  data.unshift({id:Date.now().toString(36),source:$("src").value.trim(),question:q,options:opts,mine:m,correct:c,date:new Date().toISOString(),mastered:false,streak:0,explain:""});
+  persist();refresh();clearForm(true);
+  toast(m===c?"已儲存（答對）":"已儲存（答錯，已加入重考）");
+};
+
+/* log */
+function renderLog(){
+  var s=$("fsrc").value,st=$("fst").value;
+  var rows=data.filter(function(e){
+    if(s&&e.source!==s)return false;
+    if(st==="wrong")return isWrong(e);
+    if(st==="right")return !isWrong(e);
+    if(st==="todo")return isWrong(e)&&!e.mastered;
+    if(st==="done")return e.mastered;
+    return true;
+  });
+  if(!rows.length){$("list").innerHTML='<div class="empty">沒有符合的題目。到「新增」輸入第一題。</div>';return}
+  $("list").innerHTML=rows.map(function(e){
+    var w=isWrong(e);
+    var opts=e.options.map(function(o,i){return '<div>'+L[i]+'. '+esc(o)+(L[i]===e.correct?' ✓':'')+(L[i]===e.mine&&w?' ✗':'')+'</div>'}).join("");
+    return '<div class="card" data-id="'+e.id+'">'+
+      '<span class="tag '+(w?'bad':'ok')+'">'+(w?'答錯':'答對')+'</span> '+(e.mastered?'<span class="tag ok">已掌握</span> ':'')+
+      '<span class="hint">'+esc(e.source||"未填來源")+'｜'+new Date(e.date).toLocaleDateString()+'</span>'+
+      '<div class="q">'+esc(e.question)+'</div>'+opts+
+      '<div class="hint">我選 '+e.mine+'，正解 '+e.correct+'</div>'+
+      '<details><summary>解析筆記</summary><textarea data-act="exp" placeholder="把 Claude 的解析貼在這裡，重考時會顯示">'+esc(e.explain||"")+'</textarea></details>'+
+      '<div class="row"><button class="btn" data-act="prompt">複製解析指令</button>'+
+      (w?'<button class="btn ghost" data-act="master">'+(e.mastered?'取消掌握':'標記已掌握')+'</button>':'')+
+      '<button class="btn warn" data-act="del">刪除</button></div></div>';
+  }).join("");
+}
+$("fsrc").onchange=renderLog;$("fst").onchange=renderLog;
+function find(id){return data.filter(function(e){return e.id===id})[0]}
+$("list").addEventListener("click",function(ev){
+  var b=ev.target.closest("button[data-act]");if(!b)return;
+  var card=b.closest(".card"),e=find(card.dataset.id);if(!e)return;
+  var a=b.dataset.act;
+  if(a==="prompt")copy(buildPrompt(e));
+  if(a==="master"){e.mastered=!e.mastered;persist();refresh();renderLog()}
+  if(a==="del"&&confirm("確定刪除這題？")){data=data.filter(function(x){return x!==e});persist();refresh();renderLog()}
+});
+$("list").addEventListener("change",function(ev){
+  var t=ev.target;if(t.dataset.act!=="exp")return;
+  var e=find(t.closest(".card").dataset.id);if(e){e.explain=t.value;persist();toast("解析已儲存")}
+});
+
+/* retake */
+var queue=[],cur=null,done=0,total=0,answered=false;
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+function startRetake(){
+  queue=shuffle(data.filter(function(e){return isWrong(e)&&!e.mastered}));
+  total=queue.length;done=0;next();
+}
+function next(){
+  cur=queue.shift()||null;answered=false;
+  var box=$("rt");
+  if(!cur){
+    box.innerHTML='<div class="card empty">'+(total?'這一輪完成，共 '+total+' 題。':'目前沒有待加強的錯題。')+'<div class="row" style="justify-content:center">'+(total?'<button class="btn" id="again">再來一輪</button>':'')+'</div></div>';
+    var ag=$("again");if(ag)ag.onclick=startRetake;return;
+  }
+  box.innerHTML='<div class="card"><div class="hint">'+(done+1)+' / '+total+'｜'+esc(cur.source||"未填來源")+'</div><div class="q">'+esc(cur.question)+'</div>'+
+    cur.options.map(function(o,i){return '<button class="opt" data-l="'+L[i]+'">'+L[i]+'. '+esc(o)+'</button>'}).join("")+
+    '<div id="reveal"></div></div>';
+}
+$("rt").addEventListener("click",function(ev){
+  var o=ev.target.closest(".opt");
+  if(o&&cur&&!answered){
+    answered=true;var pick=o.dataset.l,ok=pick===cur.correct;
+    Array.prototype.forEach.call($("rt").querySelectorAll(".opt"),function(b){
+      b.disabled=true;
+      if(b.dataset.l===cur.correct)b.classList.add("right");
+      else if(b.dataset.l===pick)b.classList.add("wrong");
+    });
+    cur.streak=ok?(cur.streak||0)+1:0;persist();
+    $("reveal").innerHTML='<p><span class="tag '+(ok?'ok':'bad')+'">'+(ok?'答對':'答錯')+'</span> 正確答案 '+cur.correct+(ok&&cur.streak>1?'｜連續答對 '+cur.streak+' 次':'')+'</p>'+
+      (cur.explain?'<div class="exp">'+esc(cur.explain)+'</div>':'<div class="hint">還沒有解析筆記，可複製指令問 Claude，再貼到「紀錄」的解析筆記。</div>')+
+      '<div class="row"><button class="btn ghost" data-r="prompt">複製解析指令</button>'+(ok?'<button class="btn ghost" data-r="master">標記已掌握</button>':'')+'<button class="btn" data-r="next">下一題</button></div>';
+    return;
+  }
+  var r=ev.target.closest("button[data-r]");if(!r||!cur)return;
+  if(r.dataset.r==="prompt")copy(buildPrompt(cur));
+  if(r.dataset.r==="master"){cur.mastered=true;persist();refresh();r.disabled=true;toast("已標記掌握")}
+  if(r.dataset.r==="next"){done++;next()}
+});
+
+/* backup */
+$("exp").onclick=function(){
+  var blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
+  var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="toeic-mistakes-"+new Date().toISOString().slice(0,10)+".json";
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+};
+$("impBtn").onclick=function(){$("imp").click()};
+$("imp").onchange=function(){
+  var f=this.files[0];if(!f)return;
+  var rd=new FileReader();
+  rd.onload=function(){
+    try{
+      var inc=JSON.parse(rd.result);if(!Array.isArray(inc))throw 0;
+      var ids={};data.forEach(function(e){ids[e.id]=1});
+      var n=0;inc.forEach(function(e){if(e&&e.id&&e.question&&!ids[e.id]){data.push(e);n++}});
+      data.sort(function(a,b){return a.date<b.date?1:-1});
+      persist();refresh();toast("匯入 "+n+" 題");
+    }catch(e){toast("檔案格式不正確")}
+  };
+  rd.readAsText(f);this.value="";
+};
+
+load();refresh();
+})();
+</script>
+</body>
+</html>
