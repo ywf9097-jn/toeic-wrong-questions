@@ -74,8 +74,9 @@ details summary{cursor:pointer;color:var(--acc);font-size:14px;margin-top:8px}
   </div>
   <div class="card">
     <b>匯出題目（Word / 文字檔）</b>
-    <p class="hint">文字檔用匯入的同一格式，可以再貼回「批次貼上匯入」。筆記會以 # 開頭附在最後，匯入時自動略過。</p>
+    <p class="hint">每題一行：來源 / 題目 (A)選項 (B)選項 (C)選項 (D)選項 / 我的回答: x / 正確答案: y<br>可以直接貼回「批次貼上匯入」。</p>
     <select id="escope"><option value="all">全部題目</option><option value="wrong">只有答錯的題目</option></select>
+    <label style="font-weight:400"><input type="checkbox" id="enote" style="width:auto;margin-right:6px">在題目下方附上筆記（以 # 開頭，匯入時會略過）</label>
     <div class="row"><button class="btn" id="edocx">匯出 Word (.docx)</button><button class="btn ghost" id="etxt">匯出文字檔 (.txt)</button></div>
   </div>
   <div class="card">
@@ -307,13 +308,17 @@ function exportRows(){var sc=$("escope").value;return data.filter(function(e){re
 function stamp(){return new Date().toISOString().slice(0,10)}
 function dl(blob,name){var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();document.body.removeChild(a)}
 function one(t){return String(t).replace(/\s*\n\s*/g," ")}
+function lineOf(e){
+  return (e.source||"未填")+" / "+one(e.question)+" "+e.options.map(function(o,k){return "("+L[k]+")"+one(o)}).join(" ")+" / 我的回答: "+e.mine+" / 正確答案: "+e.correct;
+}
+function exportLines(rows){
+  var out=[],nt=$("enote").checked;
+  rows.forEach(function(e){out.push(lineOf(e));if(nt&&e.explain)out.push("# 筆記: "+one(e.explain))});
+  return out;
+}
 $("etxt").onclick=function(){
   var rows=exportRows();if(!rows.length){toast("沒有可匯出的題目");return}
-  var lines=rows.map(function(e,i){
-    return (i+1)+". "+(e.source||"未填")+" / "+one(e.question)+" "+e.options.map(function(o,k){return "("+L[k]+") "+one(o)}).join(" ")+" / 我的回答: "+e.mine+" / 正確答案: "+e.correct;
-  });
-  rows.forEach(function(e,i){if(e.explain)lines.push("# 筆記 "+(i+1)+": "+one(e.explain))});
-  dl(new Blob(["\ufeff"+lines.join("\n")+"\n"],{type:"text/plain;charset=utf-8"}),"toeic-questions-"+stamp()+".txt");
+  dl(new Blob(["\ufeff"+exportLines(rows).join("\n")+"\n"],{type:"text/plain;charset=utf-8"}),"toeic-questions-"+stamp()+".txt");
 };
 function crc32(b){var crc=-1,c;for(var i=0;i<b.length;i++){c=(crc^b[i])&255;for(var k=0;k<8;k++)c=c&1?(c>>>1)^0xEDB88320:c>>>1;crc=(crc>>>8)^c}return(crc^-1)>>>0}
 function le(n,len){var a=[];for(var i=0;i<len;i++){a.push(n&255);n=n>>>8}return a}
@@ -334,15 +339,8 @@ function xesc(t){return String(t).replace(/[&<>]/g,function(c){return{"&":"&amp;
 function para(t,bold){return '<w:p><w:r>'+(bold?'<w:rPr><w:b/></w:rPr>':'')+'<w:t xml:space="preserve">'+xesc(t)+'</w:t></w:r></w:p>'}
 $("edocx").onclick=function(){
   var rows=exportRows();if(!rows.length){toast("沒有可匯出的題目");return}
-  var b=para("多益題目備份 "+stamp()+"（共 "+rows.length+" 題）",true);
-  rows.forEach(function(e,i){
-    b+=para("");
-    b+=para((i+1)+". ["+(e.source||"未填來源")+"] "+(isWrong(e)?"答錯":"答對"),true);
-    e.question.split(/\n/).forEach(function(t){b+=para(t)});
-    e.options.forEach(function(o,k){b+=para("("+L[k]+") "+o)});
-    b+=para("我的答案："+e.mine+"　正確答案："+e.correct);
-    if(e.explain){b+=para("筆記：",true);e.explain.split(/\n/).forEach(function(t){b+=para(t)})}
-  });
+  var b="";
+  exportLines(rows).forEach(function(t){b+=para(t)});
   var doc='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>'+b+'</w:body></w:document>';
   var ct='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>';
   var rl='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>';
