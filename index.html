@@ -73,6 +73,12 @@ details summary{cursor:pointer;color:var(--acc);font-size:14px;margin-top:8px}
     <div class="row"><button class="btn" id="bgo">匯入這些題目</button></div>
   </div>
   <div class="card">
+    <b>匯出題目（Word / 文字檔）</b>
+    <p class="hint">文字檔用匯入的同一格式，可以再貼回「批次貼上匯入」。筆記會以 # 開頭附在最後，匯入時自動略過。</p>
+    <select id="escope"><option value="all">全部題目</option><option value="wrong">只有答錯的題目</option></select>
+    <div class="row"><button class="btn" id="edocx">匯出 Word (.docx)</button><button class="btn ghost" id="etxt">匯出文字檔 (.txt)</button></div>
+  </div>
+  <div class="card">
     <p>資料只存在這個瀏覽器裡。換手機或清除瀏覽資料前，請先匯出備份。</p>
     <div class="row"><button class="btn" id="exp">匯出備份 (.json)</button><button class="btn ghost" id="impBtn">匯入備份</button></div>
     <input type="file" id="imp" accept="application/json" class="hide">
@@ -265,7 +271,7 @@ function toLetter(raw,opts){
 function parseBatch(text){
   var out=[],bad=0;
   text.split(/\n+/).forEach(function(line){
-    line=line.trim().replace(/^\d+\s*[.、)]\s*/,"");if(!line)return;
+    line=line.trim();if(!line||line.charAt(0)==="#")return;line=line.replace(/^\d+\s*[.、)]\s*/,"");
     var m=line.match(/^([^\/]*?)\s*\/\s*([\s\S]*?)\s*\/\s*我的回答\s*[:：]\s*([\s\S]*?)\s*\/\s*正確答案\s*[:：]\s*([\s\S]*)$/);
     if(!m){bad++;return}
     var body=m[2],pos=[],re=/\(([A-E])\)\s*/g,x;
@@ -294,6 +300,53 @@ $("bgo").onclick=function(){
   persist();refresh();
   $("bt").value="";
   toast("匯入 "+n+" 題｜重複 "+dup+"｜格式錯誤 "+r.bad);
+};
+
+/* export */
+function exportRows(){var sc=$("escope").value;return data.filter(function(e){return sc==="wrong"?isWrong(e):true})}
+function stamp(){return new Date().toISOString().slice(0,10)}
+function dl(blob,name){var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();document.body.removeChild(a)}
+function one(t){return String(t).replace(/\s*\n\s*/g," ")}
+$("etxt").onclick=function(){
+  var rows=exportRows();if(!rows.length){toast("沒有可匯出的題目");return}
+  var lines=rows.map(function(e,i){
+    return (i+1)+". "+(e.source||"未填")+" / "+one(e.question)+" "+e.options.map(function(o,k){return "("+L[k]+") "+one(o)}).join(" ")+" / 我的回答: "+e.mine+" / 正確答案: "+e.correct;
+  });
+  rows.forEach(function(e,i){if(e.explain)lines.push("# 筆記 "+(i+1)+": "+one(e.explain))});
+  dl(new Blob(["\ufeff"+lines.join("\n")+"\n"],{type:"text/plain;charset=utf-8"}),"toeic-questions-"+stamp()+".txt");
+};
+function crc32(b){var crc=-1,c;for(var i=0;i<b.length;i++){c=(crc^b[i])&255;for(var k=0;k<8;k++)c=c&1?(c>>>1)^0xEDB88320:c>>>1;crc=(crc>>>8)^c}return(crc^-1)>>>0}
+function le(n,len){var a=[];for(var i=0;i<len;i++){a.push(n&255);n=n>>>8}return a}
+function zip(files){
+  var enc=new TextEncoder(),chunks=[],cd=[],off=0;
+  files.forEach(function(f){
+    var nm=enc.encode(f.name),d=enc.encode(f.data),crc=crc32(d),n=Array.from(nm);
+    var h=[].concat(le(0x04034b50,4),le(20,2),le(0,2),le(0,2),le(0,2),le(33,2),le(crc,4),le(d.length,4),le(d.length,4),le(nm.length,2),le(0,2));
+    chunks.push(new Uint8Array(h),nm,d);
+    cd=cd.concat(le(0x02014b50,4),le(20,2),le(20,2),le(0,2),le(0,2),le(0,2),le(33,2),le(crc,4),le(d.length,4),le(d.length,4),le(nm.length,2),le(0,2),le(0,2),le(0,2),le(0,2),le(0,4),le(off,4),n);
+    off+=h.length+nm.length+d.length;
+  });
+  var end=[].concat(le(0x06054b50,4),le(0,2),le(0,2),le(files.length,2),le(files.length,2),le(cd.length,4),le(off,4),le(0,2));
+  chunks.push(new Uint8Array(cd),new Uint8Array(end));
+  return new Blob(chunks,{type:"application/vnd.openxmlformats-officedocument.wordprocessingml.document"});
+}
+function xesc(t){return String(t).replace(/[&<>]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;"}[c]})}
+function para(t,bold){return '<w:p><w:r>'+(bold?'<w:rPr><w:b/></w:rPr>':'')+'<w:t xml:space="preserve">'+xesc(t)+'</w:t></w:r></w:p>'}
+$("edocx").onclick=function(){
+  var rows=exportRows();if(!rows.length){toast("沒有可匯出的題目");return}
+  var b=para("多益題目備份 "+stamp()+"（共 "+rows.length+" 題）",true);
+  rows.forEach(function(e,i){
+    b+=para("");
+    b+=para((i+1)+". ["+(e.source||"未填來源")+"] "+(isWrong(e)?"答錯":"答對"),true);
+    e.question.split(/\n/).forEach(function(t){b+=para(t)});
+    e.options.forEach(function(o,k){b+=para("("+L[k]+") "+o)});
+    b+=para("我的答案："+e.mine+"　正確答案："+e.correct);
+    if(e.explain){b+=para("筆記：",true);e.explain.split(/\n/).forEach(function(t){b+=para(t)})}
+  });
+  var doc='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>'+b+'</w:body></w:document>';
+  var ct='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>';
+  var rl='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>';
+  dl(zip([{name:"[Content_Types].xml",data:ct},{name:"_rels/.rels",data:rl},{name:"word/document.xml",data:doc}]),"toeic-questions-"+stamp()+".docx");
 };
 
 load();refresh();show("retake");
