@@ -5,41 +5,40 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>多益錯題本</title>
 <style>
-:root{--bg:#f2f5f7;--card:#fff;--ink:#1b2a3a;--sub:#5d6b7a;--line:#d8e0e7;--acc:#2457c5;--acc-t:#e6edfb;--bad:#c23b3b;--bad-t:#fbeaea;--ok:#2e7d5b;--ok-t:#e5f4ec}
-@media (prefers-color-scheme:dark){:root{--bg:#121920;--card:#1b242d;--ink:#e6edf3;--sub:#92a1b0;--line:#2c3844;--acc:#7aa2ff;--acc-t:#1f2c4a;--bad:#ff8a8a;--bad-t:#3a2326;--ok:#6fd1a0;--ok-t:#1d3328}}
+:root{color-scheme:light;--bg:#ffffff;--card:#ffffff;--field:#f3f8fc;--ink:#17324d;--sub:#5f7a92;--line:#d3e2ee;--acc:#1e6bd6;--acc-t:#e6f0fc;--grn:#1f9d6b;--bad:#c23b3b;--bad-t:#fbeaea;--ok:#1f9d6b;--ok-t:#e3f5ec}
 *{box-sizing:border-box}
 html,body{margin:0}
-body{background:var(--bg);color:var(--ink);font:16px/1.6 -apple-system,"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;padding:0 14px 60px;max-width:720px;margin:0 auto}
+body{background:var(--bg);color:var(--ink);border-top:5px solid var(--grn);font:16px/1.6 -apple-system,"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;padding:0 14px 60px;max-width:720px;margin:0 auto}
 h1{font-size:22px;margin:18px 0 4px}
 .stat{color:var(--sub);font-size:14px;margin-bottom:12px}
-nav{display:flex;gap:6px;position:sticky;top:0;background:var(--bg);padding:8px 0;z-index:5}
+nav{display:flex;gap:6px;position:sticky;top:0;background:#fff;padding:8px 0;z-index:5}
 nav button{flex:1;padding:10px 4px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;font:inherit;font-size:14px;cursor:pointer}
 nav button.on{background:var(--acc);color:#fff;border-color:var(--acc)}
 .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin:10px 0}
 label{display:block;font-weight:600;font-size:14px;margin:12px 0 4px}
-input[type=text],textarea,select{width:100%;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit}
+input[type=text],textarea,select{width:100%;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--field);color:var(--ink);font:inherit}
 textarea{min-height:90px;resize:vertical}
 .hint{color:var(--sub);font-size:13px;margin-top:2px}
-.btn{padding:10px 14px;border:1px solid var(--acc);background:var(--acc);color:#fff;border-radius:10px;font:inherit;font-size:15px;cursor:pointer}
-.btn.ghost{background:transparent;color:var(--acc)}
+.btn{padding:10px 14px;border:1px solid var(--grn);background:var(--grn);color:#fff;border-radius:10px;font:inherit;font-size:15px;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--acc);border-color:var(--acc)}
 .btn.warn{background:transparent;color:var(--bad);border-color:var(--bad)}
 .btn:focus-visible,nav button:focus-visible,.opt:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
 .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
 .letters{display:flex;gap:8px}
 .letters label{margin:0;flex:1}
 .letters input{display:none}
-.letters span{display:block;text-align:center;padding:10px 0;border:1px solid var(--line);border-radius:10px;cursor:pointer;background:var(--bg)}
+.letters span{display:block;text-align:center;padding:10px 0;border:1px solid var(--line);border-radius:10px;cursor:pointer;background:var(--field)}
 .letters input:checked+span{background:var(--acc);color:#fff;border-color:var(--acc)}
 .tag{display:inline-block;font-size:12px;padding:1px 8px;border-radius:99px;background:var(--acc-t);color:var(--acc)}
 .tag.bad{background:var(--bad-t);color:var(--bad)}.tag.ok{background:var(--ok-t);color:var(--ok)}
 .q{white-space:pre-wrap;margin:8px 0}
-.opt{display:block;width:100%;text-align:left;padding:10px 12px;margin:6px 0;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit;cursor:pointer}
+.opt{display:block;width:100%;text-align:left;padding:10px 12px;margin:6px 0;border:1px solid var(--line);border-radius:10px;background:var(--field);color:var(--ink);font:inherit;cursor:pointer}
 .opt.right{background:var(--ok-t);border-color:var(--ok)}
 .opt.wrong{background:var(--bad-t);border-color:var(--bad)}
 .opt:disabled{cursor:default;color:var(--ink)}
-.exp{white-space:pre-wrap;background:var(--bg);border-radius:10px;padding:10px;margin-top:8px;font-size:15px}
+.exp{white-space:pre-wrap;background:var(--field);border-radius:10px;padding:10px;margin-top:8px;font-size:15px}
 .empty{color:var(--sub);text-align:center;padding:30px 10px}
-.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s}
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;border-radius:10px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s}
 .toast.show{opacity:1}
 details summary{cursor:pointer;color:var(--acc);font-size:14px;margin-top:8px}
 .hide{display:none}
@@ -52,7 +51,7 @@ details summary{cursor:pointer;color:var(--acc);font-size:14px;margin-top:8px}
   <button data-t="add" class="on">新增</button>
   <button data-t="log">紀錄</button>
   <button data-t="retake">重考錯題</button>
-  <button data-t="backup">備份</button>
+  <button data-t="backup">匯入/備份</button>
 </nav>
 
 <section id="add">
@@ -85,6 +84,12 @@ details summary{cursor:pointer;color:var(--acc);font-size:14px;margin-top:8px}
 <section id="retake" class="hide"><div id="rt"></div></section>
 
 <section id="backup" class="hide">
+  <div class="card">
+    <b>批次貼上匯入</b>
+    <p class="hint">一行一題，格式：<br>來源 / 題目 (A)選項 (B)選項 (C)選項 (D)選項 / 我的回答: C / 正確答案: A<br>行首的題號會自動忽略，重複的題目會跳過。雙選可寫「A、B」。</p>
+    <textarea id="bt" style="min-height:160px" placeholder="把整份題目貼在這裡"></textarea>
+    <div class="row"><button class="btn" id="bgo">匯入這些題目</button></div>
+  </div>
   <div class="card">
     <p>資料只存在這個瀏覽器裡。換手機或清除瀏覽資料前，請先匯出備份。</p>
     <div class="row"><button class="btn" id="exp">匯出備份 (.json)</button><button class="btn ghost" id="impBtn">匯入備份</button></div>
@@ -187,7 +192,7 @@ function renderLog(){
   if(!rows.length){$("list").innerHTML='<div class="empty">沒有符合的題目。到「新增」輸入第一題。</div>';return}
   $("list").innerHTML=rows.map(function(e){
     var w=isWrong(e);
-    var opts=e.options.map(function(o,i){return '<div>'+L[i]+'. '+esc(o)+(L[i]===e.correct?' ✓':'')+(L[i]===e.mine&&w?' ✗':'')+'</div>'}).join("");
+    var opts=e.options.map(function(o,i){return '<div>'+L[i]+'. '+esc(o)+(L[i]===e.correct?' ✓':'')+(e.mine.indexOf(L[i])>=0&&w?' ✗':'')+'</div>'}).join("");
     return '<div class="card" data-id="'+e.id+'">'+
       '<span class="tag '+(w?'bad':'ok')+'">'+(w?'答錯':'答對')+'</span> '+(e.mastered?'<span class="tag ok">已掌握</span> ':'')+
       '<span class="hint">'+esc(e.source||"未填來源")+'｜'+new Date(e.date).toLocaleDateString()+'</span>'+
@@ -273,6 +278,46 @@ $("imp").onchange=function(){
     }catch(e){toast("檔案格式不正確")}
   };
   rd.readAsText(f);this.value="";
+};
+
+/* batch paste */
+function toLetter(raw,opts){
+  raw=raw.trim();
+  for(var i=0;i<opts.length;i++){if(opts[i].toLowerCase()===raw.toLowerCase())return L[i]}
+  var m=raw.match(/[A-E]/g);return m?m.join("、"):raw;
+}
+function parseBatch(text){
+  var out=[],bad=0;
+  text.split(/\n+/).forEach(function(line){
+    line=line.trim().replace(/^\d+\s*[.、)]\s*/,"");if(!line)return;
+    var m=line.match(/^([^\/]*?)\s*\/\s*([\s\S]*?)\s*\/\s*我的回答\s*[:：]\s*([\s\S]*?)\s*\/\s*正確答案\s*[:：]\s*([\s\S]*)$/);
+    if(!m){bad++;return}
+    var body=m[2],pos=[],re=/\(([A-E])\)\s*/g,x;
+    while((x=re.exec(body)))pos.push({i:x.index,e:re.lastIndex});
+    if(pos.length<2){bad++;return}
+    var q=body.slice(0,pos[0].i).trim().replace(/^\d+\.\s*/,"");
+    var opts=pos.map(function(p,k){return body.slice(p.e,k+1<pos.length?pos[k+1].i:body.length).trim()});
+    if(!q)q="(請看選項)";
+    out.push({source:m[1].trim(),question:q,options:opts,mine:toLetter(m[3],opts),correct:toLetter(m[4],opts)});
+  });
+  return {rows:out,bad:bad};
+}
+$("bgo").onclick=function(){
+  var r=parseBatch($("bt").value);
+  if(!r.rows.length){toast("沒有讀到題目，請檢查格式");return}
+  var seen={};data.forEach(function(e){seen[e.source+"|"+e.question]=1});
+  var base=Date.now(),n=0,dup=0;
+  r.rows.forEach(function(e,k){
+    if(seen[e.source+"|"+e.question]){dup++;return}
+    seen[e.source+"|"+e.question]=1;
+    e.id=base.toString(36)+k+Math.random().toString(36).slice(2,5);
+    e.date=new Date(base-k*1000).toISOString();e.mastered=false;e.streak=0;e.explain="";
+    data.push(e);n++;
+  });
+  data.sort(function(a,b){return a.date<b.date?1:-1});
+  persist();refresh();
+  $("bt").value="";
+  toast("匯入 "+n+" 題｜重複 "+dup+"｜格式錯誤 "+r.bad);
 };
 
 load();refresh();
