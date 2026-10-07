@@ -222,15 +222,27 @@ $("list").addEventListener("change",function(ev){
 /* retake */
 var queue=[],cur=null,done=0,total=0,answered=false;
 function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+var lastN="";
 function startRetake(){
-  queue=shuffle(data.filter(function(e){return isWrong(e)&&!e.mastered}));
-  total=queue.length;done=0;next();
+  var pool=data.filter(function(e){return isWrong(e)&&!e.mastered}),box=$("rt");
+  if(!pool.length){queue=[];total=0;cur=null;box.innerHTML='<div class="card empty">目前沒有待加強的錯題。</div>';return}
+  var opts="";
+  for(var n=10;n<pool.length;n+=10)opts+='<option value="'+n+'">'+n+' 題</option>';
+  opts+='<option value="all">全部 '+pool.length+' 題</option>';
+  box.innerHTML='<div class="card"><p>待加強的錯題共 <b>'+pool.length+'</b> 題。</p><label for="rn">這次要考幾題</label><select id="rn">'+opts+'</select><div class="row"><button class="btn" id="rgo">開始重考</button></div></div>';
+  if(lastN&&$("rn").querySelector('option[value="'+lastN+'"]'))$("rn").value=lastN;
+  $("rgo").onclick=function(){
+    var v=$("rn").value;lastN=v;
+    queue=shuffle(pool.slice());
+    if(v!=="all")queue=queue.slice(0,parseInt(v,10));
+    total=queue.length;done=0;next();
+  };
 }
 function next(){
   cur=queue.shift()||null;answered=false;
   var box=$("rt");
   if(!cur){
-    box.innerHTML='<div class="card empty">'+(total?'這一輪完成，共 '+total+' 題。':'目前沒有待加強的錯題。')+'<div class="row" style="justify-content:center">'+(total?'<button class="btn" id="again">再來一輪</button>':'')+'</div></div>';
+    box.innerHTML='<div class="card empty">'+(total?'這一輪完成，共 '+total+' 題。':'目前沒有待加強的錯題。')+'<div class="row" style="justify-content:center">'+(total?'<button class="btn" id="again">回到選題數</button>':'')+'</div></div>';
     var ag=$("again");if(ag)ag.onclick=startRetake;return;
   }
   box.innerHTML='<div class="card"><div class="hint">'+(done+1)+' / '+total+'｜'+esc(cur.source||"未填來源")+'</div><div class="q">'+esc(cur.question)+'</div>'+
