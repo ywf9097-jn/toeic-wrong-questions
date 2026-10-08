@@ -57,7 +57,7 @@ details summary{cursor:pointer;color:var(--acc);font-size:14px;margin-top:8px}
   <div class="card">
     <div class="row" style="margin-top:0">
       <select id="fsrc" style="flex:1"></select>
-      <select id="fst" style="flex:1"><option value="all">全部</option><option value="wrong">答錯</option><option value="right">答對</option><option value="todo">錯題未掌握</option><option value="done">已掌握</option></select>
+      <select id="fst" style="flex:1"><option value="all">全部</option><option value="wrong">答錯</option><option value="right">答對</option><option value="guess">猜對</option><option value="todo">錯題未掌握</option><option value="done">已掌握</option></select>
     </div>
   </div>
   <div id="list"></div>
@@ -97,6 +97,7 @@ function $(id){return document.getElementById(id)}
 function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
 function toast(m){var t=$("toast");t.textContent=m;t.classList.add("show");setTimeout(function(){t.classList.remove("show")},1800)}
 function isWrong(e){return e.mine!==e.correct}
+function weak(e){return isWrong(e)||!!e.guess}
 
 /* AI explanation prompt */
 function buildPrompt(e){
@@ -135,8 +136,8 @@ $("nav").addEventListener("click",function(ev){var b=ev.target.closest("button")
 
 /* stats + sources */
 function refresh(){
-  var w=data.filter(isWrong).length,todo=data.filter(function(e){return isWrong(e)&&!e.mastered}).length;
-  $("stat").textContent="共 "+data.length+" 題｜答錯 "+w+"｜待加強 "+todo;
+  var w=data.filter(isWrong).length,g=data.filter(function(e){return !isWrong(e)&&e.guess}).length,todo=data.filter(function(e){return weak(e)&&!e.mastered}).length;
+  $("stat").textContent="共 "+data.length+" 題｜答錯 "+w+"｜猜對 "+g+"｜待加強 "+todo;
   var srcs=[];data.forEach(function(e){if(e.source&&srcs.indexOf(e.source)<0)srcs.push(e.source)});
   var cur=$("fsrc").value;
   $("fsrc").innerHTML='<option value="">所有來源</option>'+srcs.map(function(s){return '<option value="'+esc(s)+'">'+esc(s)+'</option>'}).join("");
@@ -150,7 +151,8 @@ function renderLog(){
     if(s&&e.source!==s)return false;
     if(st==="wrong")return isWrong(e);
     if(st==="right")return !isWrong(e);
-    if(st==="todo")return isWrong(e)&&!e.mastered;
+    if(st==="guess")return !isWrong(e)&&!!e.guess;
+    if(st==="todo")return weak(e)&&!e.mastered;
     if(st==="done")return e.mastered;
     return true;
   });
@@ -159,14 +161,14 @@ function renderLog(){
     var w=isWrong(e);
     var opts=e.options.map(function(o,i){return '<div>'+L[i]+'. '+esc(o)+(L[i]===e.correct?' ✓':'')+(e.mine.indexOf(L[i])>=0&&w?' ✗':'')+'</div>'}).join("");
     return '<div class="card" data-id="'+e.id+'">'+
-      '<span class="tag '+(w?'bad':'ok')+'">'+(w?'答錯':'答對')+'</span> '+(e.mastered?'<span class="tag ok">已掌握</span> ':'')+
+      '<span class="tag '+(w?'bad':'ok')+'">'+(w?'答錯':'答對')+'</span> '+(!w&&e.guess?'<span class="tag bad">猜對</span> ':'')+(e.mastered?'<span class="tag ok">已掌握</span> ':'')+
       '<span class="hint">'+esc(e.source||"未填來源")+'｜'+new Date(e.date).toLocaleDateString()+'</span>'+
       '<div class="q">'+esc(e.question)+'</div>'+opts+
       '<div class="hint">我選 '+e.mine+'，正解 '+e.correct+'</div>'+
       (e.explain?'<div class="exp">'+esc(e.explain)+'</div>':'')+
       '<div class="noteBox hide"><textarea data-act="exp" placeholder="寫下這題的筆記或貼上 Claude 的解析">'+esc(e.explain||"")+'</textarea></div>'+
       '<div class="row"><button class="btn ghost" data-act="note">'+(e.explain?'編輯筆記':'新增筆記')+'</button><button class="btn ghost" data-act="prompt">複製解析指令</button>'+
-      (w?'<button class="btn ghost" data-act="master">'+(e.mastered?'取消掌握':'標記已掌握')+'</button>':'')+
+      (!w?'<button class="btn ghost" data-act="guess">'+(e.guess?'取消猜對標記':'標記為猜的')+'</button>':'')+(weak(e)?'<button class="btn ghost" data-act="master">'+(e.mastered?'取消掌握':'標記已掌握')+'</button>':'')+
       '<button class="btn warn" data-act="del">刪除</button></div></div>';
   }).join("");
 }
@@ -178,6 +180,7 @@ $("list").addEventListener("click",function(ev){
   var a=b.dataset.act;
   if(a==="prompt")copy(buildPrompt(e));
   if(a==="note"){var nb=card.querySelector(".noteBox");nb.classList.toggle("hide");if(!nb.classList.contains("hide"))nb.querySelector("textarea").focus()}
+  if(a==="guess"){e.guess=!e.guess;if(!e.guess)e.mastered=false;persist();refresh();renderLog()}
   if(a==="master"){e.mastered=!e.mastered;persist();refresh();renderLog()}
   if(a==="del"&&confirm("確定刪除這題？")){data=data.filter(function(x){return x!==e});persist();refresh();renderLog()}
 });
@@ -190,7 +193,7 @@ $("list").addEventListener("change",function(ev){
 var queue=[],cur=null,done=0,total=0,answered=false;
 function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
 var lastN="",mode="wrong";
-function poolFor(){return mode==="all"?data.slice():data.filter(function(e){return isWrong(e)&&!e.mastered})}
+function poolFor(){return mode==="all"?data.slice():data.filter(function(e){return weak(e)&&!e.mastered})}
 function startRetake(){
   var pool=poolFor(),box=$("rt");
   var seg='<div class="seg"><button data-m="wrong" class="'+(mode==="wrong"?"on":"")+'">只考錯題</button><button data-m="all" class="'+(mode==="all"?"on":"")+'">錯題＋對題</button></div>';
@@ -232,7 +235,7 @@ $("rt").addEventListener("click",function(ev){
     cur.streak=ok?(cur.streak||0)+1:0;persist();
     $("reveal").innerHTML='<p><span class="tag '+(ok?'ok':'bad')+'">'+(ok?'答對':'答錯')+'</span> 正確答案 '+cur.correct+(ok&&cur.streak>1?'｜連續答對 '+cur.streak+' 次':'')+'</p>'+
       
-      '<div class="row"><button class="btn ghost" data-r="prompt">複製解析指令</button>'+(ok&&isWrong(cur)&&!cur.mastered?'<button class="btn ghost" data-r="master">標記已掌握</button>':'')+'<button class="btn" data-r="next">下一題</button></div>';
+      '<div class="row"><button class="btn ghost" data-r="prompt">複製解析指令</button>'+(ok&&weak(cur)&&!cur.mastered?'<button class="btn ghost" data-r="master">標記已掌握</button>':'')+'<button class="btn" data-r="next">下一題</button></div>';
     return;
   }
   var r=ev.target.closest("button[data-r]");if(!r||!cur)return;
