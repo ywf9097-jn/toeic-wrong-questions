@@ -190,7 +190,7 @@ $("list").addEventListener("change",function(ev){
 });
 
 /* retake */
-var queue=[],cur=null,done=0,total=0,answered=false;
+var queue=[],cur=null,done=0,total=0,answered=false,pickNow="";
 function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
 var lastN="",mode="wrong";
 function poolFor(){return mode==="all"?data.slice():data.filter(function(e){return weak(e)&&!e.mastered})}
@@ -226,7 +226,7 @@ $("rt").addEventListener("click",function(ev){
   if(sg){mode=sg.dataset.m;startRetake();return}
   var o=ev.target.closest(".opt");
   if(o&&cur&&!answered){
-    answered=true;var pick=o.dataset.l,ok=pick===cur.correct;
+    answered=true;var pick=o.dataset.l,ok=pick===cur.correct;pickNow=pick;
     Array.prototype.forEach.call($("rt").querySelectorAll(".opt"),function(b){
       b.disabled=true;
       if(b.dataset.l===cur.correct)b.classList.add("right");
@@ -235,13 +235,23 @@ $("rt").addEventListener("click",function(ev){
     cur.streak=ok?(cur.streak||0)+1:0;persist();
     $("reveal").innerHTML='<p><span class="tag '+(ok?'ok':'bad')+'">'+(ok?'答對':'答錯')+'</span> 正確答案 '+cur.correct+(ok&&cur.streak>1?'｜連續答對 '+cur.streak+' 次':'')+'</p>'+
       
-      '<div class="row"><button class="btn ghost" data-r="prompt">複製解析指令</button>'+(ok&&weak(cur)&&!cur.mastered?'<button class="btn ghost" data-r="master">標記已掌握</button>':'')+'<button class="btn" data-r="next">下一題</button></div>';
+      '<div class="noteBox hide"><textarea id="rnote" placeholder="寫下這題的筆記"></textarea></div>'+
+      '<div class="row"><button class="btn ghost" data-r="note">新增筆記</button><button class="btn ghost" data-r="prompt">複製解析指令</button>'+(ok&&weak(cur)&&!cur.mastered?'<button class="btn ghost" data-r="master">標記已掌握</button>':'')+'<button class="btn" data-r="next">下一題</button></div>';
     return;
   }
   var r=ev.target.closest("button[data-r]");if(!r||!cur)return;
-  if(r.dataset.r==="prompt")copy(buildPrompt(cur));
+  if(r.dataset.r==="prompt"){
+    var pe=cur;
+    if(pickNow&&pickNow!==cur.correct){pe=Object.assign({},cur);pe.mine=pickNow}
+    copy(buildPrompt(pe));
+  }
+  if(r.dataset.r==="note"){
+    var nb=$("rt").querySelector(".noteBox"),ta=$("rnote");
+    if(nb.classList.contains("hide")){ta.value=cur.explain||"";nb.classList.remove("hide");ta.focus();r.textContent="儲存筆記"}
+    else{cur.explain=ta.value.trim();persist();nb.classList.add("hide");r.textContent=cur.explain?"編輯筆記":"新增筆記";toast("筆記已儲存")}
+  }
   if(r.dataset.r==="master"){cur.mastered=true;persist();refresh();r.disabled=true;toast("已標記掌握")}
-  if(r.dataset.r==="next"){done++;next()}
+  if(r.dataset.r==="next"){var ta2=$("rnote");if(ta2&&ta2.offsetParent!==null){cur.explain=ta2.value.trim();persist()}done++;next()}
 });
 
 /* backup */
