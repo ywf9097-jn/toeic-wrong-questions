@@ -164,11 +164,11 @@ function renderLog(){
       '<span class="tag '+(w?'bad':'ok')+'">'+(w?'答錯':'答對')+'</span> '+(!w&&e.guess?'<span class="tag bad">猜對</span> ':'')+(e.mastered?'<span class="tag ok">已掌握</span> ':'')+
       '<span class="hint">'+esc(e.source||"未填來源")+'｜'+new Date(e.date).toLocaleDateString()+'</span>'+
       '<div class="q">'+esc(e.question)+'</div>'+opts+
-      '<div class="hint">我選 '+e.mine+'，正解 '+e.correct+'</div>'+
+      '<div class="hint">我選 '+e.mine+'，正解 '+e.correct+(e.prevMine&&!w?'（原本答錯，原選 '+e.prevMine+'，重考答對後已移到答對）':'')+'</div>'+
       (e.explain?'<div class="exp">'+esc(e.explain)+'</div>':'')+
       '<div class="noteBox hide"><textarea data-act="exp" placeholder="寫下這題的筆記或貼上 Claude 的解析">'+esc(e.explain||"")+'</textarea></div>'+
       '<div class="row"><button class="btn ghost" data-act="note">'+(e.explain?'編輯筆記':'新增筆記')+'</button><button class="btn ghost" data-act="prompt">複製解析指令</button>'+
-      (!w?'<button class="btn ghost" data-act="guess">'+(e.guess?'取消猜對標記':'標記為猜的')+'</button>':'')+(weak(e)?'<button class="btn ghost" data-act="master">'+(e.mastered?'取消掌握':'標記已掌握')+'</button>':'')+
+      (e.prevMine&&!w?'<button class="btn ghost" data-act="undo">移回答錯</button>':'')+(!w?'<button class="btn ghost" data-act="guess">'+(e.guess?'取消猜對標記':'標記為猜的')+'</button>':'')+(weak(e)?'<button class="btn ghost" data-act="master">'+(e.mastered?'取消掌握':'標記已掌握')+'</button>':'')+
       '<button class="btn warn" data-act="del">刪除</button></div></div>';
   }).join("");
 }
@@ -180,6 +180,7 @@ $("list").addEventListener("click",function(ev){
   var a=b.dataset.act;
   if(a==="prompt")copy(buildPrompt(e));
   if(a==="note"){var nb=card.querySelector(".noteBox");nb.classList.toggle("hide");if(!nb.classList.contains("hide"))nb.querySelector("textarea").focus()}
+  if(a==="undo"){e.mine=e.prevMine;delete e.prevMine;e.mastered=false;persist();refresh();renderLog()}
   if(a==="guess"){e.guess=!e.guess;if(!e.guess)e.mastered=false;persist();refresh();renderLog()}
   if(a==="master"){e.mastered=!e.mastered;persist();refresh();renderLog()}
   if(a==="del"&&confirm("確定刪除這題？")){data=data.filter(function(x){return x!==e});persist();refresh();renderLog()}
@@ -232,8 +233,12 @@ $("rt").addEventListener("click",function(ev){
       if(b.dataset.l===cur.correct)b.classList.add("right");
       else if(b.dataset.l===pick)b.classList.add("wrong");
     });
-    cur.streak=ok?(cur.streak||0)+1:0;persist();
-    $("reveal").innerHTML='<p><span class="tag '+(ok?'ok':'bad')+'">'+(ok?'答對':'答錯')+'</span> 正確答案 '+cur.correct+(ok&&cur.streak>1?'｜連續答對 '+cur.streak+' 次':'')+'</p>'+
+    cur.streak=ok?(cur.streak||0)+1:0;
+    var moved=false;
+    if(ok&&weak(cur)){if(isWrong(cur))cur.prevMine=cur.mine;cur.mine=cur.correct;cur.guess=false;moved=true}
+    if(!ok&&!isWrong(cur)){cur.mine=pick;delete cur.prevMine;cur.mastered=false}
+    persist();refresh();
+    $("reveal").innerHTML='<p><span class="tag '+(ok?'ok':'bad')+'">'+(ok?'答對':'答錯')+'</span> 正確答案 '+cur.correct+(ok&&cur.streak>1?'｜連續答對 '+cur.streak+' 次':'')+'</p>'+(moved?'<p class="hint">已移到「答對」。</p>':'')+
       
       '<div class="noteBox hide"><textarea id="rnote" placeholder="寫下這題的筆記"></textarea></div>'+
       '<div class="row"><button class="btn ghost" data-r="note">新增筆記</button><button class="btn ghost" data-r="prompt">複製解析指令</button>'+(ok&&weak(cur)&&!cur.mastered?'<button class="btn ghost" data-r="master">標記已掌握</button>':'')+'<button class="btn" data-r="next">下一題</button></div>';
@@ -243,6 +248,7 @@ $("rt").addEventListener("click",function(ev){
   if(r.dataset.r==="prompt"){
     var pe=cur;
     if(pickNow&&pickNow!==cur.correct){pe=Object.assign({},cur);pe.mine=pickNow}
+    else if(cur.prevMine){pe=Object.assign({},cur);pe.mine=cur.prevMine}
     copy(buildPrompt(pe));
   }
   if(r.dataset.r==="note"){
