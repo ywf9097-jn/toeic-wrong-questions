@@ -226,25 +226,26 @@ Depend on|Our success will depend on customer satisfaction.
 Draw|The festival draws thousands of visitors each year.`.split("\n").map(l=>l.split("|"));
 const list=document.getElementById("list"),synth=window.speechSynthesis;
 let voice=null,run=0,rows=[];
-function pick(){const v=synth.getVoices();voice=v.find(x=>x.lang==="en-US"&&/Samantha|Google|Aaron|Allison|Ava/i.test(x.name))||v.find(x=>x.lang==="en-US")||v.find(x=>x.lang.startsWith("en"))||null}
+function pick(){const L=x=>x.lang.replace("_","-"),v=synth.getVoices().filter(x=>L(x).startsWith("en"));voice=v.find(x=>x.localService&&L(x)==="en-US")||v.find(x=>x.localService)||v.find(x=>L(x)==="en-US")||v[0]||null}
 if(synth){pick();synth.onvoiceschanged=pick}
 function mark(i){rows.forEach((r,j)=>r.classList.toggle("on",j===i))}
 function speak(i,done){
   if(!synth)return;
+  if(!voice)pick();
   const u=new SpeechSynthesisUtterance(DATA[i][1]);
   u.lang="en-US";if(voice)u.voice=voice;
   u.rate=parseFloat(document.getElementById("rate").value);
   u.onend=()=>{if(done)done()};
-  u.onerror=()=>{};
+  u.onerror=e=>{if(e.error!=="canceled"&&e.error!=="interrupted")document.querySelector("h1").textContent="Audio error: "+e.error};
   mark(i);rows[i].scrollIntoView({block:"center",behavior:"smooth"});
-  synth.speak(u);
+  window._u=u;synth.resume();synth.speak(u);
 }
 function stop(){run++;if(synth)synth.cancel();mark(-1)}
-function playOne(i){stop();speak(i)}
+function playOne(i){stop();setTimeout(()=>speak(i),120)}
 function playAll(){
   stop();const id=run;let i=0;
   const next=()=>{if(id!==run||i>=DATA.length){mark(-1);return}speak(i++,()=>setTimeout(next,350))};
-  next();
+  setTimeout(next,150);
 }
 DATA.forEach((d,i)=>{
   const r=document.createElement("div");r.className="row";
