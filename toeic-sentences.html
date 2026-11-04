@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TOEIC Sentences</title>
+<style>
+:root{--bg:#fafaf7;--fg:#1d1d1b;--mut:#6b6b66;--card:#fff;--bd:#e4e4de;--ac:#2f6fed;--hl:#e8f0ff;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#161615;--fg:#eeeeea;--mut:#9a9a94;--card:#202020;--bd:#33332f;--ac:#6b9bff;--hl:#1f2a40;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#161615;--fg:#eeeeea;--mut:#9a9a94;--card:#202020;--bd:#33332f;--ac:#6b9bff;--hl:#1f2a40;color-scheme:dark}
+html,body{margin:0}
+body{background:var(--bg);color:var(--fg);font-family:-apple-system,system-ui,"Segoe UI",sans-serif;line-height:1.45}
+header{position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);border-bottom:1px solid var(--bd);padding:10px 14px;display:flex;gap:8px;align-items:center;z-index:5}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:10}
+h1{font-size:16px;margin:0;flex:1}
+button,select{font:inherit;color:var(--fg)}
+.ctl{background:var(--card);border:1px solid var(--bd);border-radius:8px;padding:6px 10px;font-size:14px}
+main{padding:10px 14px 30px;max-width:720px;margin:0 auto}
+.row{display:flex;gap:10px;align-items:center;background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:10px 12px;margin-bottom:8px}
+.row.on{background:var(--hl);border-color:var(--ac)}
+.t{flex:1;min-width:0}
+.w{font-size:12px;font-weight:600;color:var(--ac);text-transform:uppercase;letter-spacing:.04em}
+.s{font-size:16px}
+body.hide .t{visibility:hidden}
+.p{flex:none;width:42px;height:42px;border-radius:50%;border:none;background:var(--ac);color:#fff;font-size:16px;cursor:pointer}
+</style>
+</head>
+<body>
+<header>
+<h1>TOEIC Sentences</h1>
+<select id="rate" class="ctl"><option value="0.8">Slow</option><option value="1" selected>Normal</option><option value="1.2">×1.2</option></select>
+<button id="eye" class="ctl">Hide text</button>
+<button id="all" class="ctl">▶ All</button>
+<button id="stop" class="ctl">■</button>
+</header>
+<main id="list"></main>
+<script>
+const DATA=`Acquisition|The acquisition of the smaller firm was completed in March.
+Summarise|Please summarise the main points of the report before the meeting.
+Contract|Both parties signed the contract on Friday morning.
+Projection|The sales projection for next quarter looks encouraging.
+Increasingly|Customers are increasingly choosing to shop online.
+Succeed|To succeed in this market, we must lower our costs.
+Refreshment|Light refreshments will be served after the presentation.
+Associate|She is an associate at a large law firm.
+Omit|Please do not omit any expenses from the form.
+Compile|Mr. Lee will compile the survey results by Thursday.
+Interrupt|Sorry to interrupt, but the client is on line two.
+Assent|The board gave its assent to the new budget.
+Relatively|The new software is relatively easy to install.
+Significant|There has been a significant increase in website traffic.
+Manner|All complaints must be handled in a professional manner.
+Appearance|The appearance of the lobby improved after the renovation.
+Mandate|The government issued a mandate requiring annual safety checks.
+Direction|The company is moving in a new direction this year.
+Occasionally|Employees occasionally work from home on Fridays.
+Renovate|We plan to renovate the east wing of the hotel.
+Consistently|The team has consistently met its monthly targets.
+Deposit|A deposit is required to reserve the conference room.
+Densely|The city center is densely populated with offices and shops.
+Grant|The foundation will grant funding to local start-ups.
+Duration|The duration of the training session is two hours.
+Initial|The initial proposal was rejected, but the revised one passed.
+Persist|If the problem persists, contact technical support.
+Examination|The auditor’s examination of the records took a week.
+Appropriate|Please wear appropriate clothing to the factory tour.
+Merge|The two banks agreed to merge next year.
+Revise|Ms. Park will revise the schedule to include a lunch break.
+Evaluation|Each employee receives an annual performance evaluation.
+Mandatory|Attendance at the safety workshop is mandatory.
+Property|The property is located near the central train station.
+Specify|Please specify your preferred delivery date on the order form.
+Evenly|Distribute the workload evenly among team members.
+Confidence|Investors have confidence in the company’s new leadership.
+Response|We appreciate your prompt response to our inquiry.
+Proceed|Passengers may proceed to Gate 12 for boarding.
+Subsequent|Subsequent orders will receive a ten percent discount.
+Inspection|The building passed the fire safety inspection.
+Reward|Loyal customers will receive a reward for their purchases.
+Representative|A sales representative will call you tomorrow.
+Evidence|There is strong evidence that the campaign was effective.
+Consultant|The firm hired a consultant to improve its efficiency.
+Adequately|The staff were not adequately trained for the new system.
+Explore|We should explore options for expanding overseas.
+Prospect|The prospect of a merger excited the shareholders.
+Contemporary|The museum displays contemporary art from local artists.
+Inventory|The store conducts an inventory count every December.
+Demonstration|The demonstration of the new printer begins at ten.
+Boost|The advertisement helped boost sales by twenty percent.
+Booth|Visit our booth at the trade show for a free sample.
+Predict|Analysts predict that prices will rise next month.
+Monitor|Managers monitor production levels throughout the day.
+Specific|Do you have a specific date in mind for the launch?
+Return|Items must be returned within thirty days with a receipt.
+Drastic|The company took drastic measures to cut expenses.
+Comprehensive|The package includes comprehensive insurance coverage.
+Anticipate|We anticipate a large crowd at the grand opening.
+Admission|Admission to the exhibit is free on Sundays.
+Previously|Mr. Tanaka previously worked in the marketing department.
+Negotiation|The negotiation ended with both sides satisfied.
+Consent|You need written consent from your supervisor to take leave.
+Potential|The project has great potential for growth.
+Recognise|Customers easily recognise our logo.
+Imperative|It is imperative that we submit the report today.
+Dedicated|She is a dedicated employee who often stays late.
+Assignment|Your first assignment is to review the client files.
+Atmosphere|The restaurant has a warm and relaxing atmosphere.
+Spare|Spare parts are available at the front desk.
+Absence|In her absence, Mr. Kim will lead the meeting.
+Shift|The night shift begins at ten o’clock.
+Content|The content of the brochure needs to be updated.
+Commentary|The magazine published a commentary on economic trends.
+Commission|Sales staff earn a commission on every contract they close.
+Indicate|Please indicate your meal preference on the registration form.
+Reliant|The company is heavily reliant on a single supplier.
+Perishable|Perishable goods must be stored in the refrigerator.
+Nearly|Nearly all of the tickets have been sold.
+Occur|The error may occur when the system is restarted.
+Appraisal|An appraisal of the building will be done next week.
+Particularly|The service was particularly good at the new branch.
+Approximately|The flight will take approximately three hours.
+Promptly|Please pay the invoice promptly to avoid a late fee.
+Assure|I can assure you that your order will arrive on time.
+Responsible|Who is responsible for ordering office supplies?
+Allocate|We will allocate more funds to the research department.
+Procedure|Follow the procedure below to reset your password.
+Grateful|We are grateful for your continued support.
+Intend|We intend to open two more stores this year.
+Entire|The entire staff attended the awards ceremony.
+Declare|Travelers must declare items worth more than one thousand dollars.
+Efficiently|The new system allows us to process orders efficiently.
+Collaborate|The two departments will collaborate on the product design.
+Sponsor|A local bank agreed to sponsor the charity event.
+Competent|We are looking for a competent accountant.
+Resume|Please attach your resume to the application.
+Sequence|Please complete the steps in the correct sequence.
+Lease|The lease on our office expires in June.
+Ongoing|The ongoing construction has caused traffic delays.
+Accomplish|The team accomplished its goal ahead of schedule.
+Estimate|The contractor gave us an estimate for the repairs.
+Approval|The plan is waiting for approval from the director.
+Operate|Only trained staff may operate this machinery.
+Means|Email is the quickest means of contacting our office.
+Assume|Let’s not assume that the shipment has arrived.
+Attraction|The botanical garden is the city’s top tourist attraction.
+Regular|Regular maintenance keeps the equipment in good condition.
+Community|The company donated books to the local community.
+Decorate|Volunteers will decorate the hall for the banquet.
+Gratitude|She expressed her gratitude to the entire team.
+Expert|Dr. Wong is an expert in international trade law.
+On behalf of|On behalf of the company, I would like to thank you.
+Obtain|You can obtain a permit at the city office.
+Intensify|Competition is expected to intensify next year.
+Instruction|Read the instructions carefully before assembling the desk.
+Independent|An independent firm will audit our accounts.
+Implement|The company will implement the new policy in May.
+Destination|Our final destination is the Singapore office.
+Commercial|The commercial district is crowded during lunch hours.
+Particular|Is there a particular model you are interested in?
+Decline|Sales declined slightly in the third quarter.
+Invoice|Please send the invoice to the accounting department.
+Contribute|Every member is encouraged to contribute ideas.
+Fulfill|We will fulfill your order within two business days.
+Presently|Mr. Evans is presently out of the office.
+Confidential|All employee records are strictly confidential.
+Satisfactory|The results of the test were satisfactory.
+Clearance|You need security clearance to enter the laboratory.
+Phase|The first phase of the project ends in July.
+Manual|Please consult the user manual for troubleshooting tips.
+Cuisine|The hotel restaurant serves authentic Italian cuisine.
+Considerably|Shipping costs have risen considerably this year.
+Online|You can track your package online.
+Alternative|We need an alternative to the current supplier.
+Especially|Safety is especially important in the warehouse.
+Effective|The training program proved highly effective.
+Alter|We had to alter our plans because of the weather.
+Outlook|The economic outlook for the region is positive.
+Imply|The report seems to imply that costs will rise.
+Subject|The subject of today’s meeting is the annual budget.
+Properly|The machine is not working properly.
+Deliver|We deliver all orders free of charge.
+Expect|We expect to receive the shipment on Monday.
+Interact|Staff interact with customers throughout the day.
+Advanced|The course covers advanced accounting techniques.
+Condition|The used car is in excellent condition.
+Dedicate|The company will dedicate a room to employee training.
+Regularly|Please back up your files regularly.
+Adequate|The office has adequate space for ten employees.
+Beverage|Complimentary beverages are provided during the flight.
+Determine|We must determine the cause of the delay.
+Enclose|Please enclose a check with your application.
+Enrol|Employees may enrol in the language course online.
+Capability|The new server has greater storage capability.
+Present|Ms. Chen will present the quarterly results.
+Permanently|The store closed permanently last month.
+Emerge|New leaders often emerge during difficult times.
+Exclusively|This offer is available exclusively to members.
+Ideal|This location is ideal for a new restaurant.
+Force|The sales force exceeded its target this quarter.
+Attribute|She attributes the project’s success to teamwork.
+Substantially|Profits have increased substantially since last year.
+Deserve|Our loyal customers deserve the best service.
+Vital|Clear communication is vital to any team.
+Agency|The travel agency arranged our hotel and flights.
+Expire|Your membership will expire at the end of the month.
+Appointment|I have an appointment with the dentist at three.
+Distribute|Please distribute the agenda before the meeting.
+Examine|Inspectors will examine all incoming shipments.
+Impressed|The manager was impressed by her presentation.
+Reception|The reception will be held in the main ballroom.`.split("\n").map(l=>l.split("|"));
+const list=document.getElementById("list"),synth=window.speechSynthesis;
+let voice=null,run=0,rows=[];
+function pick(){const v=synth.getVoices();voice=v.find(x=>x.lang==="en-US"&&/Samantha|Google|Aaron|Allison|Ava/i.test(x.name))||v.find(x=>x.lang==="en-US")||v.find(x=>x.lang.startsWith("en"))||null}
+if(synth){pick();synth.onvoiceschanged=pick}
+function mark(i){rows.forEach((r,j)=>r.classList.toggle("on",j===i))}
+function speak(i,done){
+  if(!synth)return;
+  const u=new SpeechSynthesisUtterance(DATA[i][1]);
+  u.lang="en-US";if(voice)u.voice=voice;
+  u.rate=parseFloat(document.getElementById("rate").value);
+  u.onend=()=>{if(done)done()};
+  u.onerror=()=>{};
+  mark(i);rows[i].scrollIntoView({block:"center",behavior:"smooth"});
+  synth.speak(u);
+}
+function stop(){run++;if(synth)synth.cancel();mark(-1)}
+function playOne(i){stop();speak(i)}
+function playAll(){
+  stop();const id=run;let i=0;
+  const next=()=>{if(id!==run||i>=DATA.length){mark(-1);return}speak(i++,()=>setTimeout(next,350))};
+  next();
+}
+DATA.forEach((d,i)=>{
+  const r=document.createElement("div");r.className="row";
+  r.innerHTML='<div class="t"><div class="w"></div><div class="s"></div></div><button class="p" aria-label="Play">▶</button>';
+  r.querySelector(".w").textContent=d[0];
+  r.querySelector(".s").textContent=d[1];
+  r.querySelector(".p").onclick=()=>playOne(i);
+  list.appendChild(r);rows.push(r);
+});
+document.getElementById("all").onclick=playAll;
+document.getElementById("stop").onclick=stop;
+document.getElementById("eye").onclick=function(){const h=document.body.classList.toggle("hide");this.textContent=h?"Show text":"Hide text"};
+</script>
+</body>
+</html>

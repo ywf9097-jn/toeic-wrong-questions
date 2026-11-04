@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TOEIC Sentences 3</title>
+<style>
+:root{--bg:#fafaf7;--fg:#1d1d1b;--card:#fff;--bd:#e4e4de;--ac:#2f6fed;--hl:#e8f0ff;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#161615;--fg:#eeeeea;--card:#202020;--bd:#33332f;--ac:#6b9bff;--hl:#1f2a40;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#161615;--fg:#eeeeea;--card:#202020;--bd:#33332f;--ac:#6b9bff;--hl:#1f2a40;color-scheme:dark}
+html,body{margin:0}
+body{background:var(--bg);color:var(--fg);font-family:-apple-system,system-ui,"Segoe UI",sans-serif;line-height:1.45}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:10}
+header{position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);border-bottom:1px solid var(--bd);padding:10px 14px;display:flex;gap:6px;align-items:center;flex-wrap:wrap;z-index:5}
+h1{font-size:16px;margin:0;flex:1;min-width:90px}
+button,select{font:inherit;color:var(--fg)}
+.ctl{background:var(--card);border:1px solid var(--bd);border-radius:8px;padding:6px 10px;font-size:14px}
+main{padding:10px 14px 30px;max-width:720px;margin:0 auto}
+.row{display:flex;gap:10px;align-items:center;background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:10px 12px;margin-bottom:8px}
+.row.on{background:var(--hl);border-color:var(--ac)}
+.t{flex:1;min-width:0}
+.w{font-size:12px;font-weight:600;color:var(--ac);text-transform:uppercase;letter-spacing:.04em}
+.s{font-size:16px}
+body.hide .t{visibility:hidden}
+.p{flex:none;width:42px;height:42px;border-radius:50%;border:none;background:var(--ac);color:#fff;font-size:16px;cursor:pointer}
+</style>
+</head>
+<body>
+<header>
+<h1>TOEIC Sentences 3</h1>
+<select id="rate" class="ctl"><option value="0.8">Slow</option><option value="1" selected>Normal</option><option value="1.2">×1.2</option></select>
+<button id="eye" class="ctl">Hide text</button>
+<button id="all" class="ctl">▶ All</button>
+<button id="stop" class="ctl">■</button>
+</header>
+<main id="list"></main>
+<script>
+const DATA=`entitle|This coupon entitles you to a free drink.
+payroll|The payroll department issues paychecks every second Friday.
+recruit|We plan to recruit ten new sales staff this spring.
+occupation|Please write your name and occupation on the form.
+wage|The minimum wage will rise in January.
+tidy|Please keep your desk tidy at all times.
+aptitude|The test measures your aptitude for technical work.
+criteria|Applicants must meet all of the criteria listed below.
+insufficient|The project was cancelled due to insufficient funds.
+regulation|The new safety regulation takes effect next month.
+adhere|All staff must adhere to the dress code.
+severely|The storm severely damaged the warehouse roof.
+refrain|Please refrain from using phones during the meeting.
+authorize|Only managers can authorize overtime pay.
+prohibit|Company rules prohibit smoking inside the building.
+abolish|The city voted to abolish the old parking fee.
+enforce|The office will enforce the new security policy.
+legislation|New legislation will affect small businesses.
+restrict|The company will restrict access to confidential files.
+bend over|He had to bend over to pick up the documents.
+in rows|The chairs were arranged in rows for the lecture.
+curriculum|The school updated its curriculum to include computer skills.
+witness|A witness described what happened at the scene.
+accustomed|Employees are accustomed to working under pressure.
+corporation|The corporation has offices in twelve countries.
+involved|Everyone involved in the project received a bonus.
+concentrate|It is hard to concentrate in a noisy office.
+a sheet of|Please hand me a sheet of paper.
+cartridge|The printer needs a new ink cartridge.
+paper jam|There is a paper jam in the copy machine.
+partition|A glass partition separates the two offices.
+section|The sports section is on page ten.
+as if|She spoke as if she had done the job for years.
+be aware of|Please be aware of the new parking rules.
+lax|The company was lax about checking visitor passes.
+procrastinate|Do not procrastinate when a deadline is near.
+accomplish|We accomplished all of our goals this quarter.
+voluntarily|Several employees voluntarily worked on the weekend.
+undertake|The firm will undertake a major building project.
+duplicate|Please do not duplicate these confidential files.
+contrary|Contrary to the forecast, sales rose last month.
+disturbing|The report contained some disturbing news.
+engage|The speaker was able to engage the whole audience.
+foster|Good managers foster teamwork.
+neutrality|The mediator kept her neutrality throughout the talks.
+widely|The product is widely available in local stores.
+sophisticated|The factory uses sophisticated machinery.
+realistically|Realistically, we cannot finish before Friday.
+apparently|Apparently, the meeting has been moved to Thursday.
+aware|Are you aware of the change in schedule?
+accidentally|I accidentally deleted the file.
+be concerned with|The committee is concerned with employee safety.
+briefcase|He left his briefcase on the train.
+cabinet|The files are kept in the cabinet by the door.
+conceal|She tried to conceal her disappointment.
+embrace|The company decided to embrace new technology.
+forum|The online forum helps customers solve problems.
+remaining|The remaining tickets will be sold at the door.
+improvise|The speaker had to improvise when the projector failed.
+antique|The shop sells antique furniture.
+manuscript|The author sent the manuscript to her editor.
+beneficial|Regular exercise is beneficial to your health.
+variety|The cafeteria offers a variety of meals.
+advocate|He is a strong advocate of flexible working hours.
+contributor|She is a regular contributor to the company newsletter.
+defy|The success of the product seemed to defy expectations.
+fascinating|The lecture on ancient trade was fascinating.
+showing|The next showing of the film begins at eight.
+cabin|We rented a cabin by the lake for the retreat.
+lawn|Gardeners mow the lawn every week.
+resort|The company holds its annual meeting at a beach resort.
+adventure|The tour offers an adventure in the mountains.
+leisure|Leisure time is important for staff well-being.
+monopoly|The firm has a monopoly on the local water supply.
+do one's utmost|We will do our utmost to meet your deadline.
+probable|It is probable that the price will go up.
+gap|There is a gap between supply and demand.
+impact|The new tax will have an impact on small shops.
+comparison|A comparison of the two plans is attached.
+mounting|There is mounting pressure to cut costs.
+reflective|Wear reflective clothing when working near the road.
+concrete|We need a concrete plan, not just ideas.
+conflict with|The meeting conflicts with my dentist appointment.
+array|The store offers a wide array of products.
+attempt|This is our second attempt to launch the product.
+audiovisual|The audiovisual equipment is in the storage room.
+conclude|The meeting will conclude at five o’clock.
+informal|The dinner is an informal gathering for staff.
+strict|The company has strict rules about data security.
+marginal|Profits showed only a marginal increase.
+influence|Social media has a strong influence on buyers.
+instantly|The message was delivered instantly.
+effort|Thank you for your effort on this project.
+incentive|The company offers incentives to its top sellers.
+mastermind|She was the mastermind behind the successful campaign.
+gather|Please gather in the lobby at nine.
+shovel|Workers used a shovel to clear the snow.
+obviously|The new model is obviously better than the old one.
+primarily|The firm primarily serves small businesses.
+stagnant|Sales have remained stagnant for two years.
+brisk|Business was brisk during the holiday season.
+unstable|The economy is still unstable.
+soar|Prices are expected to soar next year.
+assert|The manager asserted that the data was correct.
+consequence|The delay had serious consequences for the project.
+fairly|All applicants will be treated fairly.
+economical|This car is very economical to run.
+thrive|Small businesses thrive in this area.
+implication|The new law has serious implications for exporters.
+wane|Interest in the product began to wane.
+prosperity|The new factory brought prosperity to the town.
+depression|The country suffered a long economic depression.
+dwindle|Our supplies are beginning to dwindle.
+impede|Heavy snow may impede delivery trucks.
+adversity|The team showed strength in the face of adversity.
+cast|The director announced the cast for the new play.
+enterprise|He started his own enterprise ten years ago.
+franchise|She owns a franchise of a famous coffee chain.
+plenty|There is plenty of parking behind the building.
+optimistic|We are optimistic about next year’s sales.
+situation|The situation at the factory is under control.
+strengthen|The merger will strengthen our position.
+installment|You can pay in monthly installments.
+exactly|The package arrived exactly on time.
+vendor|The vendor delivers fresh produce every morning.
+costume|Employees wore costumes to the holiday party.
+devise|The team will devise a new marketing plan.
+revolutionary|The company launched a revolutionary new device.
+inspiration|The painting was the inspiration for our logo.
+sufficiently|The room was not sufficiently lit.
+patent|The inventor applied for a patent.
+envision|We envision a future with clean energy.
+compatible|The software is compatible with all devices.
+superior|Our product is superior to those of our rivals.
+absolute|The information is in absolute confidence.
+broaden|We hope to broaden our customer base.
+corrosion|Salt water can cause corrosion on metal parts.
+lid|Please put the lid back on the container.
+chemist|The chemist developed a new cleaning product.
+invention|The invention changed the way people travel.
+sensor|A motion sensor turns on the lights.
+specification|Please check the specifications before ordering.
+assemble|The workers assemble the parts by hand.
+utilize|We utilize solar power in our factory.
+separately|The items will be shipped separately.
+expiration|Check the expiration date on the package.
+maneuver|The driver had to maneuver the truck through the gate.
+prevent|Regular checks help prevent accidents.
+chemical|Wear gloves when you handle chemical products.
+craft|The shop sells handmade crafts.
+crop|The crop was damaged by heavy rain.
+curved|The building has a curved glass front.
+cyclist|The cyclist stopped at the red light.
+scratch|Be careful not to scratch the surface.
+fasten|Please fasten your seat belt.
+incredible|The view from the hotel was incredible.
+deal|We closed the deal this morning.
+argumentative|The client became argumentative during the call.
+appropriately|Please dress appropriately for the interview.
+infuriate|Long delays infuriate customers.
+courteous|The staff are always courteous to guests.
+insert|Insert your card into the machine.
+disclose|We cannot disclose the details of the contract.
+athlete|The athlete signed a contract with a sports brand.
+rinse|Rinse the container before you recycle it.
+counselor|A career counselor will help you update your resume.
+grocery|I stopped at the grocery store after work.
+exotic|The restaurant serves exotic fruit desserts.
+superb|The hotel offers superb service.
+fill out|Please fill out this form and return it.
+fill in|Fill in the blanks with the correct words.
+hospitality|The hospitality industry hires many seasonal workers.
+indulge|Guests can indulge in a full spa treatment.
+proximity|The hotel is in close proximity to the airport.
+pilot|The pilot announced a short delay.
+span|The bridge spans the river.
+border|The truck was stopped at the border.
+alliance|The two airlines formed an alliance.
+stipulation|One stipulation of the contract is early payment.
+term|Please read the terms and conditions.
+deadlock|The talks reached a deadlock.
+modify|We may modify the schedule if necessary.
+narrow|The narrow road makes it hard for trucks to pass.
+bid|Three firms submitted a bid for the project.
+settle|They settled the dispute out of court.
+terminate|The company may terminate the contract with notice.
+foundation|The foundation supports young artists.
+ceiling|The ceiling in the lobby is very high.
+spray|Spray the surface with cleaner and wipe it dry.
+deny|The company denied any wrongdoing.
+loose|A loose wire caused the power failure.
+volume|The volume of orders increased sharply.
+dealer|The car dealer offered a discount.
+encompass|The course encompasses all aspects of marketing.
+commodity|Oil is an important commodity.
+consignment|The consignment arrived at the port on Monday.
+parade|The town holds a parade every spring.
+former|The former CEO now works as a consultant.
+politician|The politician spoke at the business forum.
+fragile|Handle with care; the contents are fragile.
+carton|A carton of milk was left on the counter.
+recipient|The recipient must sign for the package.
+affix|Affix the label to the front of the box.
+oblige|The law obliges companies to report their earnings.
+clinic|The clinic opens at eight every morning.
+parcel|A parcel was left at the front desk.
+pottery|The shop sells handmade pottery.
+van|The delivery van is parked outside.
+venue|The venue can hold five hundred guests.
+elegant|The hotel has an elegant dining room.
+stir|Stir the mixture slowly for two minutes.
+complication|A complication delayed the shipment.
+freshness|The package keeps the food’s freshness.
+occupancy|The hotel has a high occupancy rate in summer.
+cereal|The hotel serves cereal and fruit for breakfast.
+garlic|Add some garlic to the sauce.
+blend|The coffee is a blend of three types of beans.
+spice|The shop sells spices from around the world.
+markedly|Sales improved markedly after the campaign.
+inaccurate|The figures in the report were inaccurate.
+tend|Prices tend to rise in December.
+booklet|A booklet is included with the product.
+upset|The customer was upset about the late delivery.
+liquid|Do not carry liquid in your hand luggage.
+pace|The team worked at a steady pace.
+audit|An outside firm will audit our accounts.
+curtail|The firm had to curtail spending.
+deficit|The company reported a budget deficit.
+expenditure|Total expenditure was lower than expected.
+accurately|Please record the data accurately.
+worth|The painting is worth a great deal of money.
+fiscal|The fiscal year ends in March.
+incidental|Incidental expenses will be reimbursed.
+inflation|Inflation has pushed up the cost of materials.
+liable|The company is liable for any damage.
+turnover|The firm has a low staff turnover.
+abundant|The region has abundant natural resources.
+active|She is an active member of the committee.
+foresee|We do not foresee any problems.
+simultaneously|The two events happen simultaneously.
+reveal|The survey revealed that most customers were satisfied.
+premiere|The film’s premiere was held in London.
+critic|The critic wrote a positive review of the restaurant.
+inward|The company is looking for inward investment.
+lean|Please do not lean on the glass wall.
+lift|Two workers will lift the heavy boxes.
+plaza|The office is located near the main plaza.
+stretch|The road stretches for miles along the coast.
+expressly|The contract expressly forbids late payment.
+founder|The founder started the company in his garage.
+individual|Each individual is responsible for his or her work.
+ironing|The hotel offers an ironing service.
+minor|There are minor changes to the schedule.
+refute|The company refuted the claims in the article.
+unanimous|The decision was unanimous.
+defer|We decided to defer the decision until next week.
+brief|Please give a brief summary of the report.
+distract|Noise can distract workers.
+emphasis|The company places great emphasis on quality.
+press|The CEO spoke to the press.
+persuasive|She gave a persuasive presentation.
+understanding|We have a good understanding of customer needs.
+adjourn|The chairman adjourned the meeting at noon.
+preside|Ms. Hall will preside over the meeting.
+irrelevant|That information is irrelevant to the decision.
+constraint|Time is our biggest constraint.
+debate|There was a heated debate about the budget.
+gathering|A gathering of staff was held in the lobby.
+judge|The judge reviewed the contract carefully.
+seminar|The seminar on leadership starts at two.
+arise|If any problems arise, call me.
+labor|Labor costs have risen this year.
+union|The union met with management on Monday.
+existing|Existing customers will receive a discount.
+exploit|The company hopes to exploit new markets.
+hook|Hang your coat on the hook by the door.
+bold|The firm made a bold move into Asia.
+in charge of|Mr. Cole is in charge of the sales team.
+pharmacy|The pharmacy is open until nine.
+precise|Please be precise when you fill out the form.
+radically|The new design is radically different.
+exceptional|Her work has been exceptional this year.
+serve|The restaurant serves lunch from noon.
+resignation|The manager submitted his resignation yesterday.
+strictly|Smoking is strictly prohibited in this area.
+gymnasium|The gymnasium is open to all staff.
+knob|Turn the knob to adjust the volume.
+ladder|He used a ladder to reach the top shelf.
+scale|The company operates on a large scale.
+scatter|Papers were scattered across the desk.
+characteristic|Honesty is a characteristic of a good leader.
+resign|The director will resign at the end of the month.
+safeguard|We use passwords to safeguard customer data.
+divert|Traffic was diverted because of construction.
+detour|We took a detour to avoid the traffic.
+fuel|The price of fuel has gone up.
+malfunction|A malfunction caused the machine to stop.
+securely|Make sure the load is securely fastened.
+prominently|The logo is prominently displayed at the entrance.
+reserved|These seats are reserved for guests.
+collision|A collision on the highway caused delays.
+tow|The car was towed to the repair shop.
+reverse|Reverse the order of the pages.
+obstruct|Do not obstruct the emergency exit.
+cab|We took a cab to the airport.
+wheel|One wheel of the cart is broken.
+access to|Employees have access to the training room.
+cite|Please cite your sources in the report.
+route|The delivery route was changed.
+hood|He opened the hood to check the engine.
+delinquent|Delinquent accounts will be reviewed.
+overdue|Your payment is overdue.
+regrettably|Regrettably, the event has been cancelled.
+withdrawal|You can make a cash withdrawal at any branch.
+mortgage|They took out a mortgage to buy a house.
+cozy|The cafe has a cozy atmosphere.
+gesture|The gift was a kind gesture.
+generously|The firm generously donated to the charity.
+lucrative|The company signed a lucrative contract.
+inherently|Some jobs are inherently risky.
+innate|She has an innate talent for sales.
+speculation|There is speculation that the firm will merge.
+solely|The decision rests solely with the director.
+entrepreneur|The young entrepreneur opened her second shop.
+eventually|The project was eventually completed.
+stability|The company enjoys financial stability.
+bond|The firm issued bonds to raise funds.
+depreciation|The depreciation of the equipment is recorded yearly.
+prevalent|Remote work is prevalent in the industry.
+rapid|The city has seen rapid growth.
+unprecedented|The firm saw unprecedented sales growth.
+compact|The compact design saves space.
+distance|The distance between the two offices is five miles.
+joint|The two firms announced a joint venture.
+accuracy|Accuracy is vital in accounting.
+furnished|The furnished apartment is available now.
+residence|The residence is close to the station.
+spacious|The office is bright and spacious.
+drape|Heavy drapes hung in the conference room.
+unoccupied|The room is currently unoccupied.
+permanent|She was offered a permanent position.
+suppose|I suppose the meeting will be postponed.
+adjacent|The parking lot is adjacent to the building.
+consist|The team consists of five members.
+utility|Utility costs are included in the rent.
+armchair|He sat in an armchair near the window.
+fence|A fence surrounds the factory.
+frame|The photo was in a wooden frame.
+garage|Visitors can park in the garage.
+rooftop|The rooftop restaurant offers a city view.
+tank|The tank holds one thousand liters.
+veranda|We had lunch on the veranda.
+dwell|Many families dwell in this neighborhood.
+inhabit|Few people inhabit this region.
+urban|Urban areas are growing fast.
+rural|Internet access in rural areas is improving.
+conserve|We must conserve energy and water.
+leak|A leak in the roof damaged the files.
+contaminate|Chemicals can contaminate the water supply.
+disaster|The disaster affected thousands of people.
+discharge|The factory must not discharge waste into the river.
+prominent|He is a prominent figure in the industry.
+deplete|Overfishing can deplete fish stocks.
+purify|The system purifies the drinking water.
+endangered|The endangered species is protected by law.
+extinction|Many animals face extinction.
+drought|The drought damaged crops across the region.
+inflict|The storm inflicted heavy damage on the coast.
+migration|Bird migration begins in the fall.
+ecology|She studies the ecology of coastal areas.
+habitat|Forests provide a habitat for wildlife.
+cave|The tour group visited a limestone cave.
+chilly|It was a chilly morning at the outdoor market.
+desert|The company built a solar plant in the desert.
+dirt|Please wipe the dirt off your shoes.
+humid|The climate here is hot and humid.
+fatigue|Long hours can lead to fatigue.
+checkup|Employees receive a free annual checkup.
+symptom|A fever is a common symptom of the flu.
+physician|Please consult your physician before starting the program.
+diagnosis|The diagnosis was confirmed by a specialist.
+recovery|She made a quick recovery after the surgery.
+coverage|The insurance plan offers full coverage.
+exposure|Limit your exposure to the sun.
+pharmaceutical|The pharmaceutical company launched a new drug.
+premium|The monthly premium is due on the first.
+relieve|The medicine will relieve the pain.
+conscientious|Mr. Park is a conscientious and reliable employee.
+deprivation|Sleep deprivation affects job performance.
+induce|Some drugs can induce drowsiness.
+nutrition|Good nutrition is important for health.
+prevention|Prevention is better than cure.
+susceptible|Young children are susceptible to colds.
+cavity|The dentist found a cavity in my tooth.
+cosmetic|The firm sells cosmetic products.
+have an injection|You need to have an injection before travel.
+surgery|He will have surgery next week.
+cure|Researchers are searching for a cure.
+disease|The disease spreads quickly.
+lung|Smoking damages the lungs.
+organ|The heart is a vital organ.
+remedy|Rest is the best remedy for a cold.
+well-being|The company cares about employee well-being.`.split("\n").map(l=>l.split("|"));
+const list=document.getElementById("list"),synth=window.speechSynthesis;
+let voice=null,run=0,rows=[];
+function pick(){const v=synth.getVoices();voice=v.find(x=>x.lang==="en-US"&&/Samantha|Google|Aaron|Allison|Ava/i.test(x.name))||v.find(x=>x.lang==="en-US")||v.find(x=>x.lang.startsWith("en"))||null}
+if(synth){pick();synth.onvoiceschanged=pick}
+function mark(i){rows.forEach((r,j)=>r.classList.toggle("on",j===i))}
+function speak(i,done){
+  if(!synth)return;
+  const u=new SpeechSynthesisUtterance(DATA[i][1]);
+  u.lang="en-US";if(voice)u.voice=voice;
+  u.rate=parseFloat(document.getElementById("rate").value);
+  u.onend=()=>{if(done)done()};
+  u.onerror=()=>{};
+  mark(i);rows[i].scrollIntoView({block:"center",behavior:"smooth"});
+  synth.speak(u);
+}
+function stop(){run++;if(synth)synth.cancel();mark(-1)}
+function playOne(i){stop();speak(i)}
+function playAll(){
+  stop();const id=run;let i=0;
+  const next=()=>{if(id!==run||i>=DATA.length){mark(-1);return}speak(i++,()=>setTimeout(next,350))};
+  next();
+}
+DATA.forEach((d,i)=>{
+  const r=document.createElement("div");r.className="row";
+  r.innerHTML='<div class="t"><div class="w"></div><div class="s"></div></div><button class="p" aria-label="Play">▶</button>';
+  r.querySelector(".w").textContent=d[0];
+  r.querySelector(".s").textContent=d[1];
+  r.querySelector(".p").onclick=()=>playOne(i);
+  list.appendChild(r);rows.push(r);
+});
+document.getElementById("all").onclick=playAll;
+document.getElementById("stop").onclick=stop;
+document.getElementById("eye").onclick=function(){const h=document.body.classList.toggle("hide");this.textContent=h?"Show text":"Hide text"};
+</script>
+</body>
+</html>
