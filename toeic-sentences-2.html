@@ -22,6 +22,9 @@ main{padding:10px 14px 30px;max-width:720px;margin:0 auto}
 .w{font-size:12px;font-weight:600;color:var(--ac);text-transform:uppercase;letter-spacing:.04em}
 .s{font-size:16px}
 body.hide .t{visibility:hidden}
+.c{flex:none;width:22px;height:22px;accent-color:var(--ac)}
+.n{flex:none;min-width:26px;text-align:right;font-size:13px;font-weight:600;opacity:.6}
+.row.done{opacity:.55}
 .p{flex:none;width:42px;height:42px;border-radius:50%;border:none;background:var(--ac);color:#fff;font-size:16px;cursor:pointer}
 </style>
 </head>
@@ -247,9 +250,13 @@ function playAll(){
   const next=()=>{if(id!==run||i>=DATA.length){mark(-1);return}speak(i++,()=>setTimeout(next,350))};
   setTimeout(next,150);
 }
+const KEY="chk:"+location.pathname;let saved={};try{saved=JSON.parse(localStorage.getItem(KEY)||"{}")}catch(e){}
 DATA.forEach((d,i)=>{
   const r=document.createElement("div");r.className="row";
-  r.innerHTML='<div class="t"><div class="w"></div><div class="s"></div></div><button class="p" aria-label="Play">▶</button>';
+  r.innerHTML='<input type="checkbox" class="c" aria-label="Done"><span class="n"></span><div class="t"><div class="w"></div><div class="s"></div></div><button class="p" aria-label="Play">▶</button>';
+  r.querySelector(".n").textContent=i+1;
+  const cb=r.querySelector(".c");cb.checked=!!saved[i];r.classList.toggle("done",cb.checked);
+  cb.onchange=()=>{saved[i]=cb.checked;r.classList.toggle("done",cb.checked);try{localStorage.setItem(KEY,JSON.stringify(saved))}catch(e){}};
   r.querySelector(".w").textContent=d[0];
   r.querySelector(".s").textContent=d[1];
   r.querySelector(".p").onclick=()=>playOne(i);
